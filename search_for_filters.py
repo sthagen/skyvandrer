@@ -30,7 +30,8 @@ Granular:
 
 ### Expansions
 
-Use expand to include additional information about filter in the response. This parameter accepts a comma-separated list. Expand options include:
+Use expand to include additional information about filter in the response.
+This parameter accepts a comma-separated list. Expand options include:
 
 - `description` Returns the description of the filter.
 - `favourite` Returns an indicator of whether the user has set the filter as a favorite.
