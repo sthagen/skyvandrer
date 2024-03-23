@@ -27,7 +27,7 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, list[object]]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -42,20 +42,23 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
+query = {'startAt': 0}
+
 collector: CollectorType = {
-    'complete': False,
+    'endpoint': url,
+    'is_complete': False,
     'page_capacity': 0,
-    'roundtrips': 0,
+    'roundtrip_count': 0,
     'start_index': 0,
     'total_count': 0,
-    'values': [],
+    'items': [],
 }
 my_start = 0
 incomplete = True
 
 while incomplete:
-    my_url = f'{url}?startAt={my_start}'
-    response = requests.request('GET', my_url, headers=headers, auth=auth)
+    query['startAt'] = my_start
+    response = requests.request('GET', url, headers=headers, params=query, auth=auth)
     data = json.loads(response.text)
 
     total = data['total']
@@ -71,13 +74,13 @@ while incomplete:
         raise IndexError(f'initial page_capacity({collector["page_capacity"]}) != ({max_results})')
 
     for entry in data['values']:
-        collector['values'].append(entry)  # type: ignore
+        collector['items'].append(entry)  # type: ignore
 
-    collector['complete'] = data['isLast']
-    incomplete = not collector['complete']
+    collector['is_complete'] = data['isLast']
+    incomplete = not collector['is_complete']
 
     my_start += max_results
-    collector['roundtrips'] += 1  # type: ignore
+    collector['roundtrip_count'] += 1  # type: ignore
 
 
-print(json.dumps(collector, sort_keys=True, indent=4, separators=(',', ': ')))
+print(json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')))
