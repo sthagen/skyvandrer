@@ -65,13 +65,17 @@ collector: CollectorType = {
     'offset': 0,
     'total_count': 0,
     'errors': [],
+    'error_messages': [],
     'items': [],
 }
 response = requests.request('GET', url, headers=headers, params=query, auth=auth)
 data = json.loads(response.text)
 
-errors = data.get('errorMessages', [])
-if errors:
+error_messages = data.get('errorMessages', [])
+if error_messages:
+    for entry in error_messages:
+        collector['error_messages'].append(entry)  # type: ignore
+    errors = data.get('errors', [])
     for entry in errors:
         collector['errors'].append(entry)  # type: ignore
 else:
