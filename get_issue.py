@@ -56,10 +56,10 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 headers = {'Accept': 'application/json'}
 
 query = {
-    'fields': ['*all'],
+    'fields': '*all',
     'fieldsByKeys': True,
     'expand': 'renderedFields,names,schema,transitions,editmeta,changelog,versionedRepresentations',
-    'properties': ['*all'],
+    'properties': '*all',
     'caseInsensitive': True,
 }
 
