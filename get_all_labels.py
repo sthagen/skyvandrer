@@ -33,5 +33,6 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 headers = {'Accept': 'application/json'}
 
 response = requests.request('GET', url, headers=headers, auth=auth)
+data = json.loads(response.text)
 
-print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(',', ': ')))
+print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))

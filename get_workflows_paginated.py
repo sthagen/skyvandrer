@@ -20,9 +20,12 @@ Granular:
 """
 import json
 import os
+from typing import Union
 
 import requests
 from requests.auth import HTTPBasicAuth
+
+CollectorType = dict[str, Union[bool, int, list[object]]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -37,6 +40,42 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-response = requests.request('GET', url, headers=headers, auth=auth)
+collector: CollectorType = {
+    'complete': False,
+    'page_capacity': 0,
+    'roundtrips': 0,
+    'start_index': 0,
+    'total_count': 0,
+    'values': [],
+}
+my_start = 0
+incomplete = True
 
-print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(',', ': ')))
+while incomplete:
+    my_url = f'{url}?startAt={my_start}'
+    response = requests.request('GET', my_url, headers=headers, auth=auth)
+    data = json.loads(response.text)
+
+    total = data['total']
+    if not collector['total_count']:
+        collector['total_count'] = total
+    elif collector['total_count'] != total:
+        raise IndexError(f'initial total_count({collector["total_count"]}) != ({total})')
+
+    max_results = data['maxResults']
+    if not collector['page_capacity']:
+        collector['page_capacity'] = max_results
+    elif collector['page_capacity'] != max_results:
+        raise IndexError(f'initial page_capacity({collector["page_capacity"]}) != ({max_results})')
+
+    for entry in data['values']:
+        collector['values'].append(entry)  # type: ignore
+
+    collector['complete'] = data['isLast']
+    incomplete = not collector['complete']
+
+    my_start += max_results
+    collector['roundtrips'] += 1  # type: ignore
+
+
+print(json.dumps(collector, sort_keys=True, indent=4, separators=(',', ': ')))
