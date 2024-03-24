@@ -14,6 +14,13 @@ def log_collector(collector: CollectorType) -> None:
         log.info(line)
 
 
+def reduce_args(args: list[str], task: str) -> list[str]:
+    """Remove the task from the arguments list."""
+    args = [arg for arg in args if arg != task]
+    log.debug(args)
+    return args
+
+
 def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
     """DRY."""
     if args is None:
@@ -21,8 +28,7 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
 
     task = 'find-groups'
     if task in args:
-        args = [arg for arg in args if arg != task]
-        log.debug(args)
+        args = reduce_args(args, task)
         try:
             query_string = args[0]
         except IndexError as err:
@@ -35,23 +41,22 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
 
     task = 'get-audit-records'
     if task in args:
-        args = [arg for arg in args if arg != task]
-        log.debug(args)
         log_collector(api.get_audit_records())
         return 0
 
     task = 'get-server-info'
     if task in args:
-        args = [arg for arg in args if arg != task]
-        log.debug(args)
-        log_collector(api.get_server_info())
+        args = reduce_args(args, task)
         return 0
 
     task = 'get-workflows-paginated'
     if task in args:
-        args = [arg for arg in args if arg != task]
-        log.debug(args)
         log_collector(api.get_workflows_paginated())
+        return 0
+
+    task = 'search-for-filters'
+    if task in args:
+        log_collector(api.search_for_filters())
         return 0
 
     return 1
