@@ -59,4 +59,9 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
         log_collector(api.search_for_filters())
         return 0
 
+    task = 'search-priorities'
+    if task in args:
+        log_collector(api.search_priorities())
+        return 0
+
     return 1
