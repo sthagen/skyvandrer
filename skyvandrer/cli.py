@@ -28,4 +28,14 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
         for line in json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')).split(NL):
             log.info(line)
         return 0
+
+    task = 'get-audit-records'
+    if task in args:
+        args = [arg for arg in args if arg != task]
+        log.debug(args)
+        collector = api.get_audit_records()
+        for line in json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')).split(NL):
+            log.info(line)
+        return 0
+
     return 1
