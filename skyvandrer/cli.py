@@ -13,6 +13,7 @@ def log_collector(collector: CollectorType) -> None:
     for line in json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')).split(NL):
         log.info(line)
 
+
 def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
     """DRY."""
     if args is None:
@@ -44,6 +45,13 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
         args = [arg for arg in args if arg != task]
         log.debug(args)
         log_collector(api.get_server_info())
+        return 0
+
+    task = 'get-workflows-paginated'
+    if task in args:
+        args = [arg for arg in args if arg != task]
+        log.debug(args)
+        log_collector(api.get_workflows_paginated())
         return 0
 
     return 1

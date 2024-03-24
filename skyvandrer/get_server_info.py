@@ -47,5 +47,4 @@ def get_server_info(
     collector['total_count'] = len(collector['record'])  # type: ignore
     collector['is_complete'] = True
 
-
     return collector
