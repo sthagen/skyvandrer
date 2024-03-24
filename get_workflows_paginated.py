@@ -16,7 +16,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
-QueryType = dict[str, Union[int, str]]
+QueryType = dict[str, Union[bool, int, str, list[str]]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')

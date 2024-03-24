@@ -31,7 +31,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
-QueryType = dict[str, Union[int, str]]
+QueryType = dict[str, Union[bool, int, str, list[str]]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -54,7 +54,7 @@ query: QueryType = {
 collector: CollectorType = {
     'endpoint': url,
     'is_complete': False,
-    'page_capacity': query['limit'],
+    'page_capacity': query['limit'],  # type: ignore
     'roundtrip_count': 1,
     'offset': 0,
     'total_count': 0,

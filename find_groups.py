@@ -26,6 +26,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[bool, int, str, list[str]]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -45,7 +46,7 @@ try:
 except IndexError as err:
     raise Exception('missing query string') from err
 
-query = {
+query: QueryType = {
     'query': query_string,
     'caseInsensitive': True,
 }

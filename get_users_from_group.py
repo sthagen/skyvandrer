@@ -19,7 +19,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
-QueryType = dict[str, Union[int, str]]
+QueryType = dict[str, Union[bool, int, str, list[str]]]
 
 UUID_PATTERN = re.compile(r'^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$')
 
