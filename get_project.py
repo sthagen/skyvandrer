@@ -1,21 +1,11 @@
 #! /usr/bin/env python
-"""GET - Get project.
+"""Get project (of ticket management system).
 
 Returns the project details for a project.
-This operation can be accessed anonymously.
-Permissions required: Browse projects project permission for the project.
-Data Security Policy: Not exempt from app access rules
 
-## Scopes
+Source:
 
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:issue-type:jira, read:project:jira, read:project.property:jira,
-    read:user:jira, read:application-role:jira, read:avatar:jira,
-    read:group:jira, read:issue-type-hierarchy:jira, read:project-category:jira,
-    read:project-version:jira, read:project.component:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-projectidorkey-get>
 
 """
 

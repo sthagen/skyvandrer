@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Get all field configurations.
+"""Get all field configurations (of ticket management system).
 
 Returns a paginated list of field configurations. The list can be for all field configurations or
 a subset determined by any combination of these criteria:
@@ -9,16 +9,10 @@ a subset determined by any combination of these criteria:
 - whether the field configuration name or description contains a query string.
 
 Only field configurations used in company-managed (classic) projects are returned.
-Permissions required: Administer Jira global permission.
-Data Security Policy: Exempt from app access rules
 
-## Scopes
+Source:
 
-Connect app scope required: ADMIN
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: manage:jira-configuration
-Granular:
-    read:field-configuration:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-field-configurations/#api-rest-api-3-fieldconfiguration-get>
 
 """
 import json
@@ -28,7 +22,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -43,7 +38,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {'startAt': 0}
+query: QueryType = {'startAt': 0}
 
 collector: CollectorType = {
     'endpoint': url,

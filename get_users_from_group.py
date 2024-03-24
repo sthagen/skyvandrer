@@ -1,22 +1,13 @@
 #! /usr/bin/env python
-"""GET - Get users from group.
+"""Get users from group (of ticket management system).
 
 Returns a paginated list of all users in a group.
 Note that users are ordered by username, however the username is not returned in the results due to privacy reasons.
-Permissions required: either of:
 
-- Browse users and groups global permission.
-- Administer Jira global permission.
+Source:
 
-Data Security Policy: Exempt from app access rules
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-groups/#api-rest-api-3-group-member-get>
 
-## Scopes
-
-Connect app scope required: ADMIN
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: manage:jira-configuration
-Granular:
-    read:group:jira, read:user:jira, read:avatar:jira
 """
 import json
 import os
@@ -27,7 +18,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, dict[str, str], list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 UUID_PATTERN = re.compile(r'^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$')
 
@@ -54,7 +46,7 @@ except IndexError as err:
 is_group_id = bool(UUID_PATTERN.match(group_id_or_name.lower()))
 payload_key = 'groupId' if is_group_id else 'groupname'
 
-query = {
+query: QueryType = {
     'startAt': 0,
     payload_key: group_id_or_name,
     'includeInactiveUsers': True,

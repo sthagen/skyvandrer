@@ -1,21 +1,14 @@
 #! /usr/bin/env python
-"""GET - Get all statuses for project.
+"""Get all statuses for project (of ticket management system).
 
 Returns the valid statuses for a project. The statuses are grouped by issue type,
 as each project has a set of valid issue types and each issue type has a set of valid statuses.
 
 This operation can be accessed anonymously.
 
-Permissions required: Browse Projects project permission for the project.
-Data Security Policy: Exempt from app access rules
+Source:
 
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:issue-status:jira, read:issue-type:jira, read:status:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-projectidorkey-statuses-get>
 
 """
 

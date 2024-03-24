@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Search priorities-
+"""Search priorities (of ticket management system).
 
 Returns a paginated list of priorities.
 The list can contain all priorities or a subset determined by any combination of these criteria:
@@ -11,14 +11,10 @@ The list can contain all priorities or a subset determined by any combination of
   This returns priorities from company-managed (classic) projects only,
   as there is no concept of default priorities in team-managed projects.
 
-Permissions required: Permission to access Jira.
-Data Security Policy: Exempt from app access rules
+Source:
 
-## Scopes
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-priorities/#api-rest-api-3-priority-search-get>
 
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-manage:jira-configuration
 """
 import json
 import os
@@ -27,7 +23,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -42,7 +39,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {'startAt': 0}
+query: QueryType = {'startAt': 0}
 
 collector: CollectorType = {
     'endpoint': url,

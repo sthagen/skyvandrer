@@ -1,21 +1,11 @@
 #! /usr/bin/env python
-"""GET - Get workflows paginated.
+"""Get workflows paginated (of ticket management system).
 
 Returns a paginated list of published classic workflows. When workflow names are specified, details of those workflows are returned. Otherwise, all published classic workflows are returned.
 
-This operation does not return next-gen workflows.
-Permissions required: Administer Jira global permission.
-Data Security Policy: Exempt from app access rules
+Source:
 
-## Scopes
-
-Connect app scope required: ADMIN
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: manage:jira-project
-Granular:
-    read:group:jira, read:issue-security-level:jira, read:project-role:jira,
-    read:screen:jira, read:status:jira, read:user:jira, read:workflow:jira,
-    read:webhook:jira, read:avatar:jira, read:project-category:jira, read:project:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflows/#api-rest-api-3-workflow-search-get>
 
 """
 import json
@@ -25,7 +15,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -40,7 +31,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {'startAt': 0}
+query: QueryType = {'startAt': 0}
 
 collector: CollectorType = {
     'endpoint': url,

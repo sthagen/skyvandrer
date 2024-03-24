@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Get project issue type hierarchy.
+"""Get project issue type hierarchy (of ticket management system).
 
 Get the issue type hierarchy for a next-gen project.
 
@@ -12,16 +12,9 @@ The issue type hierarchy for a project consists of:
   This issue type enables level 0 issue types to be broken down into components.
   Issues based on a level -1 issue type must have a parent issue.
 
-Permissions required: Browse projects project permission for the project.
-Data Security Policy: Exempt from app access rules
+Source:
 
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:issue-type:jira, read:issue-type-hierarchy:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-projectid-hierarchy-get>
 
 """
 

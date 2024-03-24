@@ -1,26 +1,14 @@
 #! /usr/bin/env python
-"""GET - Get columns.
+"""Get columns (of ticket management system).
 
 Returns the columns configured for a filter.
 The column configuration is used when the filter's results are viewed in List View with the Columns set to Filter.
 This operation can be accessed anonymously.
-Permissions required: None, however, column details are only returned for:
 
-- filters owned by the user.
-- filters shared with a group that the user is a member of.
-- filters shared with a private project that the user has Browse projects project permission for.
-- filters shared with a public project.
-- filters shared with the public.
+Source:
 
-Data Security Policy: Not exempt from app access rules
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-filters/#api-rest-api-3-filter-id-columns-get>
 
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:filter.column:jira
 """
 
 import json

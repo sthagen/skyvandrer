@@ -1,16 +1,11 @@
 #! /usr/bin/env python
-"""GET - Get all labels.
+"""Get all labels (of ticket management system).
 
 Returns a paginated list of labels.
-Data Security Policy: Exempt from app access rules
 
-## Scopes
+Source:
 
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:read:
-    label:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-labels/#api-rest-api-3-label-get>
 
 """
 import json

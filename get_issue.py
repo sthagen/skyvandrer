@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Get issue.
+"""Get issue (of ticket management system).
 
 Returns the details for an issue.
 The issue is identified by its ID or key, however, if the identifier doesn't match an issue,
@@ -7,23 +7,9 @@ a case-insensitive search and check for moved issues is performed.
 If a matching issue is found its details are returned, a 302 or other redirect is not returned.
 The issue key returned in the response is the key of the issue found.
 
-This operation can be accessed anonymously.
+Source:
 
-Permissions required:
-
-- Browse projects project permission for the project that the issue is in.
-- If issue-level security is configured, issue-level security permission to view the issue.
-
-Data Security Policy: Not exempt from app access rules
-
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:issue-meta:jira, read:issue-security-level:jira, read:issue.vote:jira, read:issue.changelog:jira,
-    read:avatar:jira, read:issue:jira, read:status:jira, read:user:jira, read:field-configuration:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-issueidorkey-get>
 
 """
 
@@ -36,6 +22,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -55,7 +42,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {
+query: QueryType = {
     'fields': '*all',
     'fieldsByKeys': True,
     'expand': 'renderedFields,names,schema,transitions,editmeta,changelog,versionedRepresentations',

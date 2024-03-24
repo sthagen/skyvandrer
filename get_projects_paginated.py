@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Get projects paginated.
+"""Get projects paginated (of ticket management system).
 
 Returns a paginated list of projects visible to the user.
 This operation can be accessed anonymously.
@@ -9,18 +9,10 @@ Permissions required: Projects are returned only where the user has one of:
 - Administer Projects project permission for the project.
 - Administer Jira global permission.
 
-Data Security Policy: Not exempt from app access rules
+Source:
 
-## Scopes
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-search-get>
 
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:issue-type:jira, read:project:jira, read:project.property:jira,
-    read:user:jira, read:application-role:jira, read:avatar:jira,
-    read:group:jira, read:issue-type-hierarchy:jira, read:project-category:jira,
-    read:project-version:jira, read:project.component:jira
 """
 import json
 import os
@@ -29,7 +21,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -44,7 +37,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {'startAt': 0}
+query: QueryType = {'startAt': 0}
 
 collector: CollectorType = {
     'endpoint': url,

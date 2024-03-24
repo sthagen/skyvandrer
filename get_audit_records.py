@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Get audit records.
+"""Get audit records (of ticket management system).
 
 Returns a list of audit records. The list can be filtered to include items:
 - where each item in filter has at least one match in any of these fields:
@@ -18,16 +18,9 @@ Returns a list of audit records. The list can be filtered to include items:
   created on or after a date and time.
   created or or before a date and time.
 
-- Permissions required: Administer Jira global permission.
-- Data Security Policy: Exempt from app access rules
+Source:
 
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: manage:jira-configuration
-Granular:
-    read:audit-log:jira, read:user:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-audit-records/#api-rest-api-3-auditing-record-get>
 
 """
 import json
@@ -37,7 +30,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -52,7 +46,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {
+query: QueryType = {
     'offset': 0,
     'limit': 1000,
 }

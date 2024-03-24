@@ -1,20 +1,11 @@
 #! /usr/bin/env python
-"""GET - Get project notification scheme.
+"""Get project notification scheme (of ticket management system).
 
 Gets a notification scheme associated with the project.
 
-Permissions required: Administer Jira global permission or Administer Projects project permission.
-Data Security Policy: Exempt from app access rules
+Source:
 
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:project-category:jira, read:project-role:jira, read:project:jira,
-    read:user:jira, read:group:jira, read:field:jira, read:avatar:jira,
-    read:field-configuration:jira, read:notification-scheme:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-projectkeyorid-notificationscheme-get>
 
 """
 

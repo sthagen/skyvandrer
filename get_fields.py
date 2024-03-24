@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Get fields.
+"""Get fields (of ticket management system).
 
 Returns system and custom issue fields according to the following rules:
 
@@ -11,16 +11,10 @@ Returns system and custom issue fields according to the following rules:
   (that is, the field is used in at least one project that the user has Browse Projects project permission for.)
 
 This operation can be accessed anonymously.
-Permissions required: None.
-Data Security Policy: Exempt from app access rules
 
-## Scopes
+Source:
 
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:field:jira, read:avatar:jira, read:project-category:jira, read:project:jira, read:field-configuration:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-fields/#api-rest-api-3-field-get>
 
 """
 import json

@@ -1,27 +1,13 @@
 #! /usr/bin/env python
-"""GET - Get issue worklogs-
+"""Get issue worklogs (of ticket management system).
 
 Returns worklogs for an issue, starting from the oldest worklog or from the worklog started on or after a date and time.
 Time tracking must be enabled in Jira, otherwise this operation returns an error.
 For more information, see Configuring time tracking.
-This operation can be accessed anonymously.
 
-Permissions required: Workloads are only returned where the user has:
+Source:
 
-- Browse projects project permission for the project that the issue is in.
-- If issue-level security is configured, issue-level security permission to view the issue.
-- If the worklog has visibility restrictions, belongs to the group or has the role visibility is restricted to.
-
-Data Security Policy: Not exempt from app access rules
-
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:group:jira, read:issue-worklog:jira, read:issue-worklog.property:jira, read:project-role:jira,
-    read:user:jira, read:avatar:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-worklogs/#api-rest-api-3-issue-issueidorkey-worklog-get>
 
 """
 
@@ -34,6 +20,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -53,7 +40,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {'startAt': 0}
+query: QueryType = {'startAt': 0}
 
 collector: CollectorType = {
     'endpoint': url,

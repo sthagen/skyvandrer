@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Search for filters.
+"""Search for filters (of ticket management system).
 
 Returns a paginated list of filters. Use this operation to get:
 
@@ -8,43 +8,9 @@ Returns a paginated list of filters. Use this operation to get:
   For example, all filters for a user with a particular word in their name.
   When multiple attributes are specified only filters matching all attributes are returned.
 
-This operation can be accessed anonymously.
-Permissions required: None, however, only the following filters that match the query parameters are returned:
+Source:
 
-- filters owned by the user.
-- filters shared with a group that the user is a member of.
-- filters shared with a private project that the user has Browse projects project permission for.
-- filters shared with a public project.
-- filters shared with the public.
-
-Data Security Policy: Not exempt from app access rules
-
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:filter:jira, read:group:jira, read:project:jira, read:project-role:jira, read:user:jira,
-    read:jql:jira, read:application-role:jira, read:avatar:jira, read:issue-type-hierarchy:jira
-
-### Expansions
-
-Use expand to include additional information about filter in the response.
-This parameter accepts a comma-separated list. Expand options include:
-
-- `description` Returns the description of the filter.
-- `favourite` Returns an indicator of whether the user has set the filter as a favorite.
-- `favouritedCount` Returns a count of how many users have set this filter as a favorite.
-- `jql` Returns the JQL query that the filter uses.
-- `owner` Returns the owner of the filter.
-- `searchUrl` Returns a URL to perform the filter's JQL query.
-- `sharePermissions` Returns the share permissions defined for the filter.
-- `editPermissions` Returns the edit permissions defined for the filter.
-- `isWritable` Returns whether the current user has permission to edit the filter.
-- `approximateLastUsed` [Experimental] Returns the approximate date and time when the filter was last evaluated.
-- `subscriptions` Returns the users that are subscribed to the filter.
-- `viewUrl` Returns a URL to view the filter.
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-filters/#api-rest-api-3-filter-search-get>
 
 """
 import json
@@ -54,7 +20,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -87,7 +54,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {
+query: QueryType = {
     'startAt': 0,
     'expand': EXPAND,
 }

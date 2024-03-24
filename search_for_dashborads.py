@@ -1,44 +1,14 @@
 #! /usr/bin/env python
-"""GET - Search for dashboards.
+"""Search for dashboards (of ticket management system).
 
 Returns a paginated list of dashboards.
 This operation is similar to Get dashboards except that the results can be refined to include dashboards that
 have specific attributes. For example, dashboards with a particular name.
 When multiple attributes are specified only filters matching all attributes are returned.
-This operation can be accessed anonymously.
-Permissions required: The following dashboards that match the query parameters are returned:
 
-- Dashboards owned by the user. Not returned for anonymous users.
-- Dashboards shared with a group that the user is a member of. Not returned for anonymous users.
-- Dashboards shared with a private project that the user can browse. Not returned for anonymous users.
-- Dashboards shared with a public project.
-- Dashboards shared with the public.
+Source:
 
-Data Security Policy: Exempt from app access rules
-
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-work
-Granular:
-    read:dashboard:jira, read:group:jira, read:project:jira, read:project-role:jira, read:user:jira,
-    read:application-role:jira, read:avatar:jira, read:issue-type-hierarchy:jira, read:issue-type:jira,
-    read:project-category:jira, read:project-version:jira, read:project.component:jira
-
-### Expansions
-
-Use expand to include additional information about dashboard in the response.
-This parameter accepts a comma-separated list. Expand options include:
-
-- `description` Returns the description of the dashboard.
-- `owner` Returns the owner of the dashboard.
-- `viewUrl` Returns the URL that is used to view the dashboard.
-- `favourite` Returns isFavourite, an indicator of whether the user has set the dashboard as a favorite.
-- `favouritedCount` Returns popularity, a count of how many users have set this dashboard as a favorite.
-- `sharePermissions` Returns details of the share permissions defined for the dashboard.
-- `editPermissions` Returns details of the edit permissions defined for the dashboard.
-- `isWritable` Returns whether the current user has permission to edit the dashboard.
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-dashboards/#api-rest-api-3-dashboard-search-get>
 
 """
 import json
@@ -48,7 +18,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -77,7 +48,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {
+query: QueryType = {
     'startAt': 0,
     'expand': EXPAND,
 }

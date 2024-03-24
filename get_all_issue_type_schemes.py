@@ -1,18 +1,12 @@
 #! /usr/bin/env python
-"""GET - Get all issue type schemes.
+"""Get all issue type schemes (of ticket management system).
 
 Returns a paginated list of issue type schemes.
 Only issue type schemes used in classic projects are returned.
-Permissions required: Administer Jira global permission.
-Data Security Policy: Exempt from app access rules
 
-## Scopes
+Source:
 
-Connect app scope required: ADMIN
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: manage:jira-configuration
-Granular:
-    read:issue-type-scheme:jira
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-type-schemes/#api-rest-api-3-issuetypescheme-get>
 
 """
 import json
@@ -22,7 +16,8 @@ from typing import Union
 import requests
 from requests.auth import HTTPBasicAuth
 
-CollectorType = dict[str, Union[bool, int, str, list[object]]]
+CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
+QueryType = dict[str, Union[int, str]]
 
 API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
@@ -37,7 +32,7 @@ auth = HTTPBasicAuth(API_USER, API_TOKEN)
 
 headers = {'Accept': 'application/json'}
 
-query = {'startAt': 0}
+query: QueryType = {'startAt': 0}
 
 collector: CollectorType = {
     'endpoint': url,

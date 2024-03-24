@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""GET - Find groups.
+"""Find groups (of ticket management system).
 
 Returns a list of groups whose names contain a query string.
 A list of group names can be provided to exclude groups from the results.
@@ -12,21 +12,10 @@ specifically Showing X of Y matching groups.
 
 The list returns with the groups sorted. If no groups match the list criteria, an empty list is returned.
 
-This operation can be accessed anonymously.
-Permissions required: Browse projects project permission. Anonymous calls and calls by users without
-the required permission return an empty list.
+Source:
 
-Browse users and groups global permission. Without this permission,
-calls where query is not an exact match to an existing group will return an empty list.
-Data Security Policy: Exempt from app access rules
+<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-groups/#api-rest-api-3-groups-picker-get>
 
-## Scopes
-
-Connect app scope required: READ
-OAuth 2.0 scopes required:
-Classic RECOMMENDED: read:jira-user
-Granular:
-    read:group:jira
 """
 import json
 import os
