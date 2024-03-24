@@ -80,7 +80,7 @@ else:
     for entry in data:
         collector['items'].append(entry)  # type: ignore
 
-    collector['total_count'] = len(collector['items'])  # type: ignore
-    collector['is_complete'] = True
+collector['total_count'] = len(collector['items'])  # type: ignore
+collector['is_complete'] = True
 
 print(json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')))
