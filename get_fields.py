@@ -10,8 +10,6 @@ Returns system and custom issue fields according to the following rules:
 - For all other fields, this operation only returns the fields that the user has permission to view
   (that is, the field is used in at least one project that the user has Browse Projects project permission for.)
 
-This operation can be accessed anonymously.
-
 Source:
 
 <https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-fields/#api-rest-api-3-field-get>
