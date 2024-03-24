@@ -54,6 +54,11 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
         log_collector(api.get_workflows_paginated())
         return 0
 
+    task = 'search-for-dashboards'
+    if task in args:
+        log_collector(api.search_for_dashboards())
+        return 0
+
     task = 'search-for-filters'
     if task in args:
         log_collector(api.search_for_filters())

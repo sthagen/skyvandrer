@@ -1,29 +1,9 @@
-#! /usr/bin/env python
-"""Search for dashboards (of ticket management system).
+"""Search for dashboards (of ticket management system)."""
 
-Returns a paginated list of dashboards.
-This operation is similar to Get dashboards except that the results can be refined to include dashboards that
-have specific attributes. For example, dashboards with a particular name.
-When multiple attributes are specified only filters matching all attributes are returned.
-
-Source:
-
-<https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-dashboards/#api-rest-api-3-dashboard-search-get>
-
-"""
 import json
-import os
-from typing import Union
 
-import requests
-from requests.auth import HTTPBasicAuth
-
-CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
-QueryType = dict[str, Union[bool, int, str, list[str]]]
-
-API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
-API_USER = os.getenv('SUHTEITA_USER', '')
-API_TOKEN = os.getenv('SUHTEITA_TOKEN', '')
+import skyvandrer.rest as rest
+from skyvandrer import API_BASE_URL, API_TOKEN, API_USER, CollectorType, QueryType, credentials_or_die
 
 COMMA = ','
 EXPAND = COMMA.join(
@@ -39,57 +19,71 @@ EXPAND = COMMA.join(
     )
 )
 
-if not all(value for value in (API_BASE_URL, API_USER, API_TOKEN)):
-    raise KeyError('missing at least one value for API_BASE_URL, API_USER, and API_TOKEN')
 
-url = f'{API_BASE_URL}/rest/api/3/dashboard/search'
+def search_for_dashboards(
+    api_base_url: str = API_BASE_URL, api_user: str = API_USER, api_token: str = API_TOKEN
+) -> CollectorType:
+    """Search for dashboards (of ticket management system).
 
-auth = HTTPBasicAuth(API_USER, API_TOKEN)
+    Returns a paginated list of dashboards.
+    This operation is similar to Get dashboards except that the results can be refined to include dashboards that
+    have specific attributes. For example, dashboards with a particular name.
+    When multiple attributes are specified only filters matching all attributes are returned.
 
-headers = {'Accept': 'application/json'}
+    Source:
 
-query: QueryType = {
-    'startAt': 0,
-    'expand': EXPAND,
-}
+    <https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-dashboards/#api-rest-api-3-dashboard-search-get>
 
-collector: CollectorType = {
-    'endpoint': url,
-    'is_complete': False,
-    'page_capacity': 0,
-    'roundtrip_count': 0,
-    'start_index': 0,
-    'total_count': 0,
-    'items': [],
-}
-my_start = 0
-incomplete = True
+    """
+    credentials_or_die(api_base_url=api_base_url, api_user=api_user, api_token=api_token)
 
-while incomplete:
-    query['startAt'] = my_start
-    response = requests.request('GET', url, headers=headers, params=query, auth=auth)  # type: ignore
-    data = json.loads(response.text)
+    url = f'{API_BASE_URL}/rest/api/3/dashboard/search'
 
-    total = data['total']
-    if not collector['total_count']:
-        collector['total_count'] = total
-    elif collector['total_count'] != total:
-        raise IndexError(f'initial total_count({collector["total_count"]}) != ({total})')
+    auth = rest.auth(api_user=api_user, api_token=api_token)
 
-    max_results = data['maxResults']
-    if not collector['page_capacity']:
-        collector['page_capacity'] = max_results
-    elif collector['page_capacity'] != max_results:
-        raise IndexError(f'initial page_capacity({collector["page_capacity"]}) != ({max_results})')
+    headers = {'Accept': 'application/json'}
 
-    for entry in data['values']:
-        collector['items'].append(entry)  # type: ignore
+    query: QueryType = {
+        'startAt': 0,
+        'expand': EXPAND,
+    }
 
-    collector['is_complete'] = data['isLast']
-    incomplete = not collector['is_complete']
+    collector: CollectorType = {
+        'endpoint': url,
+        'is_complete': False,
+        'page_capacity': 0,
+        'roundtrip_count': 0,
+        'start_index': 0,
+        'total_count': 0,
+        'items': [],
+    }
+    my_start = 0
+    incomplete = True
 
-    my_start += max_results
-    collector['roundtrip_count'] += 1  # type: ignore
+    while incomplete:
+        query['startAt'] = my_start
+        response_text = rest.get(url, headers=headers, params=query, auth=auth)  # type: ignore
+        data = json.loads(response_text)
 
+        total = data['total']
+        if not collector['total_count']:
+            collector['total_count'] = total
+        elif collector['total_count'] != total:
+            raise IndexError(f'initial total_count({collector["total_count"]}) != ({total})')
 
-print(json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')))
+        max_results = data['maxResults']
+        if not collector['page_capacity']:
+            collector['page_capacity'] = max_results
+        elif collector['page_capacity'] != max_results:
+            raise IndexError(f'initial page_capacity({collector["page_capacity"]}) != ({max_results})')
+
+        for entry in data['values']:
+            collector['items'].append(entry)  # type: ignore
+
+        collector['is_complete'] = data['isLast']
+        incomplete = not collector['is_complete']
+
+        my_start += max_results
+        collector['roundtrip_count'] += 1  # type: ignore
+
+    return collector
