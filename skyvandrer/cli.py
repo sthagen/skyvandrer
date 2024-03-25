@@ -4,6 +4,7 @@ import json
 import sys
 from typing import Union
 
+import skyvandrer.rest as rest
 from skyvandrer import APP_ALIAS, NL, CollectorType, log
 import skyvandrer.api as api
 
@@ -53,5 +54,11 @@ def app(args: Union[None, list[str]], prog_name: str = APP_ALIAS) -> int:
         if task in args:
             log_collector(action())
             return 0
+
+    task = 'fetch-issues'
+    if task in args:
+        args = reduce_args(args, task)
+        api.fetch_issues(args, rest.auth())
+        return 0
 
     return 1

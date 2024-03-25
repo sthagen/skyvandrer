@@ -2,13 +2,14 @@
 
 import datetime as dti
 import logging
+import operator
 import os
 import pathlib
 from typing import Union, no_type_check
 
 # [[[fill git_describe()]]]
-__version__ = '2023.11.29+parent.g53f523fd'
-# [[[end]]] (checksum: a851508854340075dd2880298dc6133b)
+__version__ = '2024.3.25+parent.abadcafe'
+# [[[end]]]
 __version_info__ = tuple(
     e if '-' not in e else e.split('-')[0] for part in __version__.split('+') for e in part.split('.') if e != 'parent'
 )
@@ -41,6 +42,21 @@ API_TOKEN = os.getenv(f'{APP_ENV}_TOKEN', '')
 
 NL = '\n'
 
+DASH = '-'
+ISO_FMT = '%Y-%m-%dT%H:%M:%S.%f'
+ISO_LENGTH = len('YYYY-mm-ddTHH:MM:SS.fff')
+TZ_OP = {'+': operator.sub, '-': operator.add}  # + indicates ahead of UTC
+
+JR_NULL = '<null>'
+NA = 'n/a'
+
+REL_ISSUE_STORAGE = "issue"
+ISSUE_STORAGE_DEFAULT = pathlib.Path(pathlib.Path.home(), "d", "ticket-management-system-analysis", REL_ISSUE_STORAGE)
+ISSUE_STORAGE_ENV = os.getenv(f'{APP_ENV}_ISSUE_STORAGE', '')
+
+ISSUE_STORAGE = pathlib.Path(ISSUE_STORAGE_ENV).expanduser().resolve() if ISSUE_STORAGE_ENV else ISSUE_STORAGE_DEFAULT
+
+
 CollectorType = dict[str, Union[bool, int, str, None, dict[str, str], list[object]]]
 QueryType = dict[str, Union[bool, int, str, list[str]]]
 
@@ -68,6 +84,37 @@ def credentials_or_die(api_base_url: str = API_BASE_URL, api_user: str = API_USE
     if not all(value for value in (api_base_url, api_user, api_token)):
         log.fatal('missing at least one value for API_BASE_URL, API_USER, and API_TOKEN')
     return True
+
+
+def split_at(text_fragment: str, pos: int) -> tuple[str, str]:
+    """Split text fragment by position and return pair as tuple."""
+    return text_fragment[:pos], text_fragment[pos:]
+
+
+@no_type_check
+def parse_timestamp(text_stamp: str, iso_fmt: str = ISO_FMT) -> str:
+    """
+    Parse the timestamp formats found in REST responses from the Nineties.
+
+    Return as datetime timestamp in UTC (implicit).
+    """
+    if text_stamp is None or text_stamp == JR_NULL:
+        return None
+
+    iso_value, off = split_at(text_stamp, ISO_LENGTH)
+    local_time = dti.datetime.strptime(iso_value, iso_fmt)
+    if not off:
+        return local_time
+
+    sign_pos = 0
+    assert off and off[sign_pos] in TZ_OP  # nosec B101
+
+    m_start = 3 if ':' not in off else 4
+    assert len(off) == m_start + 2  # nosec B101
+
+    oper, hours, minutes = off[sign_pos], int(off[1:3]), int(off[m_start:])
+
+    return TZ_OP[oper](local_time, dti.timedelta(hours=hours, minutes=minutes))
 
 
 @no_type_check

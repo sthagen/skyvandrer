@@ -1,6 +1,10 @@
 """Cloud Walker (Norwegian: skyvandrer) - application programming interface."""
 
+from requests.auth import HTTPBasicAuth
+
 from skyvandrer import API_BASE_URL, API_TOKEN, API_USER, CollectorType
+from skyvandrer.fetch import fetch_issues as impl_fetch_issues
+from skyvandrer.fetch import WAIT_MAX_MILLIS
 from skyvandrer.find_groups import find_groups as impl_find_groups
 from skyvandrer.get_audit_records import get_audit_records as impl_get_audit_records
 from skyvandrer.get_server_info import get_server_info as impl_get_server_info
@@ -8,6 +12,11 @@ from skyvandrer.get_workflows_paginated import get_workflows_paginated as impl_g
 from skyvandrer.search_for_dashboards import search_for_dashboards as impl_search_for_dashboards
 from skyvandrer.search_for_filters import search_for_filters as impl_search_for_filters
 from skyvandrer.search_priorities import search_priorities as impl_search_priorities
+
+
+def fetch_issues(args: list[str], auth_token: HTTPBasicAuth, wait_max_millis: float = WAIT_MAX_MILLIS) -> None:
+    """Proxy to fetch-issues/3 implementation."""
+    return impl_fetch_issues(args, auth_token=auth_token, wait_max_millis=wait_max_millis)
 
 
 def find_groups(
