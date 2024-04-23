@@ -29,6 +29,8 @@ API_BASE_URL = os.getenv('SUHTEITA_BASE_URL', '')
 API_USER = os.getenv('SUHTEITA_USER', '')
 API_TOKEN = os.getenv('SUHTEITA_TOKEN', '')
 
+ENCODING = 'utf-8'
+
 if not all(value for value in (API_BASE_URL, API_USER, API_TOKEN)):
     raise KeyError('missing at least one value for API_BASE_URL, API_USER, and API_TOKEN')
 
@@ -78,5 +80,26 @@ while incomplete:
     my_start += max_results
     collector['roundtrip_count'] += 1  # type: ignore
 
+with open('fields.json', 'wt', encoding=ENCODING) as handle:
+    json.dump(collector, handle, indent=2)
+
+f_map = {}
+for item in collector['items']:
+    schema = item.get('schema', {})
+    f_map[item['id']] = {
+        'id': item['id'],
+        'name': item['name'],
+        'description': item['description'],
+        'type': schema.get('type', None),
+        'system': schema.get('system', None),
+        'items': schema.get('items', None),
+        'type': schema.get('type', None),
+        'custom': schema.get('custom', None),
+        'customId': schema.get('customId', 0),
+    }
+
+field_map = {key: f_map[key] for key in sorted(f_map)}
+with open('field-map.json', 'wt', encoding=ENCODING) as handle:
+    json.dump(field_map, handle, indent=2)
 
 print(json.dumps(collector, sort_keys=False, indent=4, separators=(',', ': ')))
